@@ -4,6 +4,8 @@
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 import google.generativeai as genai
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, filters, ContextTypes
@@ -263,4 +265,16 @@ if __name__ == "__main__":
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, ai_chat))
 
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"MindX Bot Running!")
+    def log_message(self, format, *args):
+        pass
+
+def run_server():
+    HTTPServer(("0.0.0.0", 8080), Handler).serve_forever()
+
+threading.Thread(target=run_server, daemon=True).start()
     app.run_polling()
