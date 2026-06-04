@@ -2,36 +2,27 @@
 # MINDX COMMUNITY BOT
 # =====================================
 
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-import google.generativeai as genai
+import os
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, filters, ContextTypes
 )
 
 # ⚠️ ӨӨРИЙНХӨӨРӨӨ СОЛИНО УУ
-TOKEN = "8820335390:AAHzpsGQRwVtSArZvIg-EDJo8_o0FHAsVXo"
-ADMIN_ID = 1983266908  # Таны Telegram ID (https://t.me/userinfobot-оос авна)
-GROQ_KEY = "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"
+TOKEN = os.environ.get("TOKEN")
+ADMIN_ID = int(os.environ.get("ADMIN_ID"))
+GROQ_KEY = os.environ.get("GROQ_KEY")
 
-# MindX холбоосууд - өөрийнхөөрөө солино уу
 MINDX_CHANNEL = "https://t.me/MindXbrothers"
-MINDX_GROUP = "https://www.facebook.com/share/g/1E7rhyTdZE/"
+MINDX_GROUP = "https://www.facebook.com/share/g/1EUFJ6Panz/"
 MINDX_WEBSITE = "https://mindxhub.com/"
 DERIV_LINK = "https://track.deriv.com/_yGETkDh0KKMKqFKZ7JdnQ2Nd7ZgqdRLk/1/"
 
-# =====================================
-# ХЭРЭГСЛИЙН ФУНКЦУУД
-# =====================================
-
 def is_admin(user_id: int) -> bool:
     return user_id == ADMIN_ID
-
-# =====================================
-# ГИШҮҮНИЙ КОМАНДУУД
-# =====================================
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
@@ -95,6 +86,7 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL)],
         [InlineKeyboardButton("Групп", url=MINDX_GROUP)],
         [InlineKeyboardButton("Вэбсайт", url=MINDX_WEBSITE)],
+        [InlineKeyboardButton("Deriv дансаа нээх", url=DERIV_LINK)],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
@@ -103,58 +95,32 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown"
     )
 
-# =====================================
-# АДМИНЫ КОМАНДУУД
-# =====================================
-
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_admin(update.message.from_user.id):
         await update.message.reply_text("❌ Зөвхөн админ ашиглах боломжтой.")
         return
-
     if not context.args:
         await update.message.reply_text(
-            "📢 Мэдээлэл тараахдаа:\n\n"
-            "/broadcast Энд мэдэгдэлээ бичнэ\n\n"
-            "Жишээ:\n"
-            "/broadcast Өнөөдөр 8 цагт арилжааны сургалт болно!"
+            "📢 Мэдээлэл тараахдаа:\n\n/broadcast Энд мэдэгдэлээ бичнэ\n\n"
+            "Жишээ:\n/broadcast Өнөөдөр 8 цагт арилжааны сургалт болно!"
         )
         return
-
     msg = " ".join(context.args)
-    broadcast_text = f"📢 *MindX мэдэгдэл*\n\n{msg}"
-
-    await update.message.reply_text(
-        f"✅ Мэдэгдэл илгээгдлээ:\n\n{broadcast_text}",
-        parse_mode="Markdown"
-    )
+    await update.message.reply_text(f"✅ Мэдэгдэл:\n\n📢 *MindX мэдэгдэл*\n\n{msg}", parse_mode="Markdown")
 
 async def send_invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_admin(update.message.from_user.id):
         await update.message.reply_text("❌ Зөвхөн админ ашиглах боломжтой.")
         return
-
     keyboard = [
         [InlineKeyboardButton("Чаннелд нэгдэх", url=MINDX_CHANNEL)],
         [InlineKeyboardButton("Группд нэгдэх", url=MINDX_GROUP)],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        "🎉 *MindX Community-д урьж байна!*\n\n"
-        "Арилжааны чиглэлээр мэдлэг хуваалцдаг манай коммунитид нэгдээрэй.\n\n"
-        "Доорх товч дарж нэгдэнэ үү 👇",
+        "🎉 *MindX Community-д урьж байна!*\n\nДоорх товч дарж нэгдэнэ үү 👇",
         reply_markup=reply_markup,
         parse_mode="Markdown"
-    )
-
-async def share_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not is_admin(update.message.from_user.id):
-        await update.message.reply_text("❌ Зөвхөн админ ашиглах боломжтой.")
-        return
-    await update.message.reply_text(
-        "📎 Файл хуваалцахдаа:\n\n"
-        "Файлаа шууд botд илгээгээрэй — би гишүүдэд дамжуулна.\n\n"
-        "Одоогоор файлаа илгээнэ үү."
     )
 
 async def admin_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -165,14 +131,9 @@ async def admin_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "⚙️ *Админы командууд*\n\n"
         "/broadcast [текст] — Мэдэгдэл тараах\n"
         "/invite — Урилгын товчлуур илгээх\n"
-        "/sharefile — Файл хуваалцах\n"
         "/adminhelp — Энэ жагсаалт\n",
         parse_mode="Markdown"
     )
-
-# =====================================
-# ТОВЧЛУУРЫН ХАРИУ
-# =====================================
 
 async def ai_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_msg = update.message.text
@@ -187,7 +148,7 @@ async def ai_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         data = {
             "model": "llama-3.3-70b-versatile",
             "messages": [
-                {"role": "system", "content": "Та MindX арилжааны коммунитийн туслах AI байна. Хэрэглэгч латин үсгээр галиглаж бичсэн монгол үгийг ойлгоод асуултад нь ХАРИУЛНА. Хариултаа кирилл монгол хэлээр бич. Хэзээ ч галиглалыг зүгээр хөрвүүлж болохгүй — заавал утга бүхий хариулт өгнө."},
+                {"role": "system", "content": "Та MindX арилжааны коммунитийн туслах AI байна. Хэрэглэгч монгол үгийг латин үсгээр галиглаж бичиж болно — жишээ нь 'yum', 'bna', 'ene', 'gej', 'we', 'baihgui' гэх мэт. Тэдгээрийг монгол кирилл үг гэж ойлгоод кирилл монгол хэлээр хариулна уу. Хариултаа ЗӨВХӨН кирилл монгол үсгээр бич."},
                 {"role": "user", "content": user_msg}
             ]
         }
@@ -196,10 +157,10 @@ async def ai_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(answer)
     except Exception as e:
         await update.message.reply_text(f"Алдаа: {str(e)}")
+
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-
     if query.data == "join":
         await join_guide(update, context)
     elif query.data == "about":
@@ -210,6 +171,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL),
              InlineKeyboardButton("Групп", url=MINDX_GROUP)],
             [InlineKeyboardButton("Вэбсайт", url=MINDX_WEBSITE)],
+            [InlineKeyboardButton("Deriv дансаа нээх", url=DERIV_LINK)],
             [InlineKeyboardButton("Бидний тухай", callback_data="about")],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -218,52 +180,21 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=reply_markup
         )
 
-# =====================================
-# ШИНЭ ГИШҮҮН МЭНДЛЭХ
-# =====================================
-
 async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for member in update.message.new_chat_members:
         if member.is_bot:
             continue
         keyboard = [
-            [InlineKeyboardButton("Дүрэм журам", callback_data="about")],
             [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL)],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text(
             f"👋 Сайн уу, {member.first_name}!\n\n"
             f"*MindX Community*-д тавтай морил!\n\n"
-            f"Бид арилжааны мэдлэг хуваалцдаг коммунити.\n"
             f"Чаннелд нэгдэж мэдээлэл авна уу 👇",
             reply_markup=reply_markup,
             parse_mode="Markdown"
         )
-
-# =====================================
-# БОТЫГ ЭХЛҮҮЛЭХ
-# =====================================
-
-if __name__ == "__main__":
-    print("MindX бот эхэллээ... Зогсоохдоо Ctrl+C дар")
-    app = ApplicationBuilder().token(TOKEN).build()
-
-    # Гишүүний командууд
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("join", join_guide))
-    app.add_handler(CommandHandler("links", links))
-    app.add_handler(CommandHandler("about", about))
-    
-    # Админы командууд
-    app.add_handler(CommandHandler("broadcast", broadcast))
-    app.add_handler(CommandHandler("invite", send_invite))
-    app.add_handler(CommandHandler("sharefile", share_file))
-    app.add_handler(CommandHandler("adminhelp", admin_help))
-
-    # Товчлуур & шинэ гишүүн
-    app.add_handler(CallbackQueryHandler(button_handler))
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, ai_chat))
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -276,5 +207,18 @@ class Handler(BaseHTTPRequestHandler):
 def run_server():
     HTTPServer(("0.0.0.0", 8080), Handler).serve_forever()
 
-threading.Thread(target=run_server, daemon=True).start()
+if __name__ == "__main__":
+    print("MindX бот эхэллээ... Зогсоохдоо Ctrl+C дар")
+    threading.Thread(target=run_server, daemon=True).start()
+    app = ApplicationBuilder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("join", join_guide))
+    app.add_handler(CommandHandler("links", links))
+    app.add_handler(CommandHandler("about", about))
+    app.add_handler(CommandHandler("broadcast", broadcast))
+    app.add_handler(CommandHandler("invite", send_invite))
+    app.add_handler(CommandHandler("adminhelp", admin_help))
+    app.add_handler(CallbackQueryHandler(button_handler))
+    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, ai_chat))
     app.run_polling()
