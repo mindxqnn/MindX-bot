@@ -16,7 +16,10 @@ ADMIN_ID = int(os.environ.get("ADMIN_ID", "0"))
 GROQ_KEY = os.environ.get("GROQ_KEY")
 
 MINDX_CHANNEL = "https://t.me/MindXbrothers"
-MINDX_GROUP = "https://www.facebook.com/share/g/1EUFJ6Panz/"
+MINDX_GROUP = "https://t.me/MindXbrothers"
+MINDX_FACEBOOK_GROUP = "https://www.facebook.com/share/g/18nY4wdSqm/"
+MINDX_FACEBOOK_PAGE = "https://www.facebook.com/official.MindX/"
+MINDX_INSTAGRAM = "https://www.instagram.com/mindx.official/"
 MINDX_WEBSITE = "https://mindxhub.com/"
 DERIV_LINK = "https://track.deriv.com/_yGETkDh0KKMKqFKZ7JdnQ2Nd7ZgqdRLk/1/"
 
@@ -27,8 +30,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
     keyboard = [
         [InlineKeyboardButton("MindX-д нэгдэх", callback_data="join")],
-        [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL),
-         InlineKeyboardButton("Групп", url=MINDX_GROUP)],
+        [InlineKeyboardButton("🌐 MindX Social", callback_data="social")],
         [InlineKeyboardButton("Вэбсайт", url=MINDX_WEBSITE)],
         [InlineKeyboardButton("Deriv дансаа нээх", url=DERIV_LINK)],
         [InlineKeyboardButton("Админтай холбогдох", callback_data="contact")],
@@ -83,10 +85,12 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL)],
-        [InlineKeyboardButton("Групп", url=MINDX_GROUP)],
-        [InlineKeyboardButton("Вэбсайт", url=MINDX_WEBSITE)],
-        [InlineKeyboardButton("Deriv дансаа нээх", url=DERIV_LINK)],
+        [InlineKeyboardButton("📢 Telegram Channel", url=MINDX_CHANNEL)],
+        [InlineKeyboardButton("💬 Telegram Group", url=MINDX_GROUP)],
+        [InlineKeyboardButton("👥 Facebook Group", url=MINDX_FACEBOOK_GROUP)],
+        [InlineKeyboardButton("📘 Facebook Page", url=MINDX_FACEBOOK_PAGE)],
+        [InlineKeyboardButton("📸 Instagram", url=MINDX_INSTAGRAM)],
+        [InlineKeyboardButton("🌐 Вэбсайт", url=MINDX_WEBSITE)],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
@@ -165,6 +169,21 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await join_guide(update, context)
     elif query.data == "about":
         await about(update, context)
+    elif query.data == "social":
+        keyboard = [
+            [InlineKeyboardButton("📢 Telegram Channel", url=MINDX_CHANNEL)],
+            [InlineKeyboardButton("💬 Telegram Group", url=MINDX_GROUP)],
+            [InlineKeyboardButton("👥 Facebook Group", url=MINDX_FACEBOOK_GROUP)],
+            [InlineKeyboardButton("📘 Facebook Page", url=MINDX_FACEBOOK_PAGE)],
+            [InlineKeyboardButton("📸 Instagram", url=MINDX_INSTAGRAM)],
+            [InlineKeyboardButton("Буцах", callback_data="back_start")],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            "🌐 *MindX Social*\n\nМанай сүлжээнүүдэд нэгдэнэ үү 👇",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
     elif query.data == "contact":
         keyboard = [
             [InlineKeyboardButton("👤 Admin 1 - @Big_qnn", url="https://t.me/Big_qnn")],
@@ -180,8 +199,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "back_start":
         keyboard = [
             [InlineKeyboardButton("MindX-д нэгдэх", callback_data="join")],
-            [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL),
-             InlineKeyboardButton("Групп", url=MINDX_GROUP)],
+            [InlineKeyboardButton("🌐 MindX Social", callback_data="social")],
             [InlineKeyboardButton("Вэбсайт", url=MINDX_WEBSITE)],
             [InlineKeyboardButton("Deriv дансаа нээх", url=DERIV_LINK)],
             [InlineKeyboardButton("Админтай холбогдох", callback_data="contact")],
