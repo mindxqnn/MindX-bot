@@ -78,7 +78,7 @@ def is_admin(user_id: int) -> bool:
 def main_keyboard(user_id):
     t = TEXTS[get_lang(user_id)]
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton(t["join"], callback_data="join")],
+        [InlineKeyboardButton(t["join"], url=MINDX_CHANNEL)],
         [InlineKeyboardButton(t["social"], callback_data="social")],
         [InlineKeyboardButton(t["website"], url=MINDX_WEBSITE)],
         [InlineKeyboardButton(t["deriv"], url=DERIV_LINK)],
