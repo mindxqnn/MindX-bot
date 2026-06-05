@@ -168,6 +168,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await about(update, context)
     elif query.data == "back_start":
     elif query.data == "contact":
+        elif query.data == "contact":
+        keyboard = [
+            [InlineKeyboardButton("👤 Admin 1 - @Big_qnn", url="https://t.me/Big_qnn")],
+            [InlineKeyboardButton("👤 Admin 2 - @G_Boggi", url="https://t.me/G_Boggi")],
+            [InlineKeyboardButton("Буцах", callback_data="back_start")],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            "📞 *Админтай холбогдох*\n\nДоорх товчнуудаар шууд холбогдоно уу:",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
     keyboard = [
         [InlineKeyboardButton("👤 Admin 1 - @Big_qnn", url="https://t.me/Big_qnn")],
         [InlineKeyboardButton("👤 Admin 2 - @G_Boggi", url="https://t.me/G_Boggi")],
