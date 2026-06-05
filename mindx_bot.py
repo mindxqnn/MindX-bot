@@ -48,17 +48,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def join_guide(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("Чаннелд нэгдэх", url=MINDX_CHANNEL)],
-        [InlineKeyboardButton("Группд нэгдэх", url=MINDX_GROUP)],
+        [InlineKeyboardButton("Telegram", url=MINDX_CHANNEL)],
         [InlineKeyboardButton("Буцах", callback_data="back_start")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     text = (
         "📋 *MindX-д хэрхэн нэгдэх вэ?*\n\n"
-        "1️⃣ Доорх *Чаннелд нэгдэх* товч дарна\n"
+        "1️⃣ Доорх *Telegram* товч дарна\n"
         "2️⃣ Telegram нээгдэж чаннел харагдана\n"
-        "3️⃣ *Join* товч дарж нэгдэнэ\n"
-        "4️⃣ Мөн *Группд нэгдэх* товчоор группт орно\n\n"
+        "3️⃣ *Join* товч дарж нэгдэнэ\n\n"
         "✅ Бүгдийг хийсний дараа та MindX-ийн гишүүн боллоо!"
     )
     if update.callback_query:
@@ -83,22 +81,6 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text(text, reply_markup=reply_markup, parse_mode="Markdown")
 
-async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton("📢 Telegram Channel", url=MINDX_CHANNEL)],
-        [InlineKeyboardButton("💬 Telegram Group", url=MINDX_GROUP)],
-        [InlineKeyboardButton("👥 Facebook Group", url=MINDX_FACEBOOK_GROUP)],
-        [InlineKeyboardButton("📘 Facebook Page", url=MINDX_FACEBOOK_PAGE)],
-        [InlineKeyboardButton("📸 Instagram", url=MINDX_INSTAGRAM)],
-        [InlineKeyboardButton("🌐 Вэбсайт", url=MINDX_WEBSITE)],
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(
-        "🔗 *MindX холбоосууд*\n\nДоорх товчнуудаас нэвтэрнэ үү:",
-        reply_markup=reply_markup,
-        parse_mode="Markdown"
-    )
-
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_admin(update.message.from_user.id):
         await update.message.reply_text("❌ Зөвхөн админ ашиглах боломжтой.")
@@ -117,8 +99,7 @@ async def send_invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Зөвхөн админ ашиглах боломжтой.")
         return
     keyboard = [
-        [InlineKeyboardButton("Чаннелд нэгдэх", url=MINDX_CHANNEL)],
-        [InlineKeyboardButton("Группд нэгдэх", url=MINDX_GROUP)],
+        [InlineKeyboardButton("Telegram", url=MINDX_CHANNEL)],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
@@ -171,8 +152,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await about(update, context)
     elif query.data == "social":
         keyboard = [
-            [InlineKeyboardButton("📢 Telegram Channel", url=MINDX_CHANNEL)],
-            [InlineKeyboardButton("💬 Telegram Group", url=MINDX_GROUP)],
+            [InlineKeyboardButton("✈️ Telegram", url=MINDX_CHANNEL)],
             [InlineKeyboardButton("👥 Facebook Group", url=MINDX_FACEBOOK_GROUP)],
             [InlineKeyboardButton("📘 Facebook Page", url=MINDX_FACEBOOK_PAGE)],
             [InlineKeyboardButton("📸 Instagram", url=MINDX_INSTAGRAM)],
@@ -216,7 +196,7 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
         if member.is_bot:
             continue
         keyboard = [
-            [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL)],
+            [InlineKeyboardButton("Telegram", url=MINDX_CHANNEL)],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text(
@@ -244,7 +224,6 @@ if __name__ == "__main__":
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("join", join_guide))
-    app.add_handler(CommandHandler("links", links))
     app.add_handler(CommandHandler("about", about))
     app.add_handler(CommandHandler("broadcast", broadcast))
     app.add_handler(CommandHandler("invite", send_invite))
