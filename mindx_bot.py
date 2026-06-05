@@ -27,13 +27,14 @@ def is_admin(user_id: int) -> bool:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
     keyboard = [
-        [InlineKeyboardButton("MindX-д нэгдэх", callback_data="join")],
-        [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL),
-         InlineKeyboardButton("Групп", url=MINDX_GROUP)],
-        [InlineKeyboardButton("Вэбсайт", url=MINDX_WEBSITE)],
-        [InlineKeyboardButton("Deriv дансаа нээх", url=DERIV_LINK)],
-        [InlineKeyboardButton("Бидний тухай", callback_data="about")],
-    ]
+    [InlineKeyboardButton("MindX-д нэгдэх", callback_data="join")],
+    [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL),
+     InlineKeyboardButton("Групп", url=MINDX_GROUP)],
+    [InlineKeyboardButton("Вэбсайт", url=MINDX_WEBSITE)],
+    [InlineKeyboardButton("Deriv дансаа нээх", url=DERIV_LINK)],
+    [InlineKeyboardButton("Админтай холбогдох", callback_data="contact")],
+    [InlineKeyboardButton("Бидний тухай", callback_data="about")],
+]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
         f"Сайн уу, {user.first_name}! 👋\n\n"
@@ -166,6 +167,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "about":
         await about(update, context)
     elif query.data == "back_start":
+    elif query.data == "contact":
+    keyboard = [
+        [InlineKeyboardButton("👤 Admin 1 - @Big_qnn", url="https://t.me/Big_qnn")],
+        [InlineKeyboardButton("👤 Admin 2 - @G_Boggi", url="https://t.me/G_Boggi")],
+        [InlineKeyboardButton("Буцах", callback_data="back_start")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(
+        "📞 *Админтай холбогдох*\n\nДоорх товчнуудаар шууд холбогдоно уу:",
+        reply_markup=reply_markup,
+        parse_mode="Markdown"
+    )
         keyboard = [
             [InlineKeyboardButton("MindX-д нэгдэх", callback_data="join")],
             [InlineKeyboardButton("Чаннел", url=MINDX_CHANNEL),
