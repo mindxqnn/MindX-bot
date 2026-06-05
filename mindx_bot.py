@@ -19,6 +19,7 @@ MINDX_CHANNEL = "https://t.me/MindXbrothers"
 MINDX_FACEBOOK_GROUP = "https://www.facebook.com/share/g/18nY4wdSqm/"
 MINDX_FACEBOOK_PAGE = "https://www.facebook.com/official.MindX/"
 MINDX_INSTAGRAM = "https://www.instagram.com/mindx.official/"
+MINDX_WHATSAPP = "https://chat.whatsapp.com/GGYJiQlEij2IlTtdWRR1rc?mode=gi_t"
 MINDX_WEBSITE = "https://mindxhub.com/"
 DERIV_LINK = "https://track.deriv.com/_yGETkDh0KKMKqFKZ7JdnQ2Nd7ZgqdRLk/1/"
 
@@ -190,6 +191,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("👥 Facebook Group", url=MINDX_FACEBOOK_GROUP)],
             [InlineKeyboardButton("📘 Facebook Page", url=MINDX_FACEBOOK_PAGE)],
             [InlineKeyboardButton("📸 Instagram", url=MINDX_INSTAGRAM)],
+            [InlineKeyboardButton("💬 WhatsApp", url=MINDX_WHATSAPP)],
             [InlineKeyboardButton(t["back"], callback_data="back_start")],
         ])
         await query.edit_message_text(t["social_text"], reply_markup=keyboard, parse_mode="Markdown")
